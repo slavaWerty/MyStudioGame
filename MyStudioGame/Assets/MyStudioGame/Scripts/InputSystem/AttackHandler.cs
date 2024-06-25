@@ -28,7 +28,6 @@ public class AttackHandler : IDisposable
 
     private void OnClickDown()
     {
-        Debug.Log(Wearpon.GetType());
         Wearpon.Attack();
     }
 }
