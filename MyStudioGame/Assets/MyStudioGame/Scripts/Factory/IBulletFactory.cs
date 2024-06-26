@@ -2,6 +2,7 @@
 
 public interface IBulletFactory
 {
-    public IBullet CreateBullet(Vector3 direction, Vector3 position, float duration, Transform container);
+    public IBullet CreateBullet(Vector3 direction, Vector3 position, 
+        float duration, Transform container, float speed, int damage);
 }
 

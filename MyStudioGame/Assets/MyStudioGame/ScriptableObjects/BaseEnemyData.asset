@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f99514c470a6744b8757c3507ba0f63, type: 3}
-  m_Name: BaseBulletConfig
+  m_Script: {fileID: 11500000, guid: 054bfcbfece183244999d2d18e843b4e, type: 3}
+  m_Name: BaseEnemyData
   m_EditorClassIdentifier: 
-  _bulletSpeed: 10
-  _bulletDamage: 10
+  _dataEnemy:
+    TimeBetweenSpawn: 2
+    Duration: 5
+    Lenght: 10

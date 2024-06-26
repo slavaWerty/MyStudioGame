@@ -6,22 +6,17 @@ public class BaseBulletFactory : IBulletFactory
 {
     private const string Path = "Prefaps/BaseBullet";
 
-    private float _bulletSpeed;
-    private int _bulletDamage;
     private Queue<GameObject> _bullets;
     private float _duration;
     private Coroutines _coroutines;
 
-    public BaseBulletFactory(BulletConfig config, Coroutines coroutines)
+    public BaseBulletFactory(Coroutines coroutines)
     {
-        _bulletSpeed = config.BulletSpeed;
-        _bulletDamage = config.BulletDamage;
-
         _bullets = new Queue<GameObject>();
         _coroutines = coroutines;
     }
 
-    public IBullet CreateBullet(Vector3 direction, Vector3 position, float duration, Transform container)
+    public IBullet CreateBullet(Vector3 direction, Vector3 position, float duration, Transform container, float speed, int damage)
     {
         var prefap = Resources.Load<GameObject>(Path);
         var go = GetObject(prefap);
@@ -30,7 +25,7 @@ public class BaseBulletFactory : IBulletFactory
         go.transform.parent = container;
 
         var bullet = go.AddComponent<BaseBullet>();
-        bullet.Initzialize(_bulletSpeed, _bulletDamage, direction, duration);
+        bullet.Initzialize(speed, damage, direction, duration);
 
         _coroutines.StartCoroutine(PoolObject(bullet.gameObject, bullet));
         return bullet;
