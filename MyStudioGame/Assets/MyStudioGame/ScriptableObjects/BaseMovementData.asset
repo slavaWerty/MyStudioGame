@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3531ec1d946f7604a86847c9c01ffd7c, type: 3}
-  m_Name: BaseGunData
+  m_Script: {fileID: 11500000, guid: 08af280815b80f04e9f00496e4393a00, type: 3}
+  m_Name: BaseMovementData
   m_EditorClassIdentifier: 
-  _dataGun:
-    Duration: 5
-    StartTimeBtwShots: 2
-    BulletDamage: 10
-    BulletSpeed: 30
+  _speed: 5
+  _jumpPower: 10
+  _layerMasl:
+    serializedVersion: 2
+    m_Bits: 64

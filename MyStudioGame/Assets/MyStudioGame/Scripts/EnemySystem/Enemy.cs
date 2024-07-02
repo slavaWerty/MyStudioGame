@@ -27,6 +27,11 @@ public class Enemy : MonoBehaviour, IMovable, IDamagable
         Moved?.Invoke();
     }
 
+    public void Move(Vector3 direction, float speed)
+    {
+        Debug.Log("Ne tot Method");
+    }
+
     public void TakeDamage(int damage)
     {
         if (damage <= 0)

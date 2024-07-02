@@ -15,16 +15,18 @@ public class GameplayLifetimeScope : LifetimeScope
     [SerializeField] private SwordConfig _swordConfig;
     [SerializeField] private EnemyConfig _enemyConfig;
     [SerializeField] private Transform _enemySpawnPoint;
+    [SerializeField] private Transform _playerSpawnPoint;
+    [SerializeField] private MovementConfig _movementconfig;
 
     protected override void Configure(IContainerBuilder builder)
     {
         RegisterCoroutines(builder);
 
-        RegisterEnemySystem(builder);
+        // RegisterEnemySystem(builder);
 
         RegisterInput(builder);
 
-        RegisterWearpons(builder);
+        RegisterMovementSystem(builder);
 
         RegisterWearponSystem(builder);
 
@@ -39,7 +41,7 @@ public class GameplayLifetimeScope : LifetimeScope
         builder.Register<AttackHandler>(Lifetime.Singleton);
     }
 
-    private void RegisterWearpons(IContainerBuilder builder)
+    private void RegisterWearpons(IContainerBuilder builder, Transform spawnPosition)
     {
         builder.Register<IBulletFactory, BaseBulletFactory>(Lifetime.Singleton);
 
@@ -47,9 +49,13 @@ public class GameplayLifetimeScope : LifetimeScope
 
         var gun = factory.CreateGun(GunPath, _mainCamera);
         builder.RegisterInstance(_gunConfig);
+        gun.gameObject.transform.position = spawnPosition.position;
+        gun.transform.parent = spawnPosition;
 
         var sword = factory.CreateSword(SwordPath);
         builder.RegisterInstance(_swordConfig);
+        sword.gameObject.transform.position = spawnPosition.position;
+        sword.transform.parent = spawnPosition;
 
         builder.RegisterComponent(gun);
         builder.RegisterComponent(sword);
@@ -76,5 +82,17 @@ public class GameplayLifetimeScope : LifetimeScope
         builder.Register<IEnemyFactory, BaseEnemyFactory>(Lifetime.Singleton);
         builder.RegisterInstance(_enemyConfig);
         builder.Register<EnemySpawner>(Lifetime.Singleton).WithParameter(_enemySpawnPoint);
+    }
+
+    private void RegisterMovementSystem(IContainerBuilder builder)
+    {
+        var factory = new BasePlayerFactory();
+        var player = factory.Create(_playerSpawnPoint.position).GetComponent<Movement>();
+
+        builder.RegisterComponent(player);
+
+        builder.Register<MovementHandler>(Lifetime.Singleton).WithParameter(_movementconfig);
+
+        RegisterWearpons(builder, player.transform.GetChild(0).transform);
     }
 }
