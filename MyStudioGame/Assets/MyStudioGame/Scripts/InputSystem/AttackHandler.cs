@@ -15,9 +15,6 @@ public class AttackHandler : IDisposable
         _iInput = input;
         _wearponSwitch = wearponSwitch;
 
-        if (IInput == null)
-            Debug.Log("Help me");
-
         IInput.Attack += OnClickDown;
     }
 
