@@ -9,10 +9,10 @@ public class GameplayEntryPoint : ITickable, IStartable
     private const string Horizontal = "Horizontal";
 
     [Inject] public AttackHandler _attackHandler;
-    [Inject] public GunRotater _gunRotater;
     [Inject] public WearponSwitch _wearponSwitch;
-   // [Inject] public EnemySpawner _enemySpanwner;
+    //[Inject] public EnemySpawner _enemySpanwner;
     [Inject] public MovementHandler _movementHandler;
+    [Inject] public RotatePlayer _playerRotater;
 
     private float _timeBetweenWeaponChanges;
     private float _startTimeBtwShots;
@@ -22,14 +22,12 @@ public class GameplayEntryPoint : ITickable, IStartable
     {
         _timeBetweenWeaponChanges = TimeBetweenWeaponChanges;
         _startTimeBtwShots = _wearponSwitch.Wearpon.StartTimeBtwShots;
-       // _timeBetweenSpawnEnemy = _enemySpanwner.TimeBetweenSpawnEnemy;
+      //  _timeBetweenSpawnEnemy = _enemySpanwner.TimeBetweenSpawnEnemy;
     }
 
     public void Tick()
     {
         Attack();
-
-        RotateGun();
 
         WearponSwitch();
 
@@ -38,6 +36,13 @@ public class GameplayEntryPoint : ITickable, IStartable
         PlayerMove();
 
         PlayerJump();
+
+        PlayerRotate();
+    }
+
+    private void PlayerRotate()
+    {
+        _playerRotater.Rotate();
     }
 
     private void PlayerMove()
@@ -56,18 +61,18 @@ public class GameplayEntryPoint : ITickable, IStartable
         }
     }
 
-  // private void EnemySpawn()
-  ///  {
-       // if (_enemySpanwner.TimeBetweenSpawnEnemy <= 0)
-       // {
-       //     _enemySpanwner.Spawn(EnemyPath);
-       //     _enemySpanwner.TimeBetweenSpawnEnemy = _timeBetweenSpawnEnemy;
-       // }
-       // else
-       // {
-       //     _enemySpanwner.TimeBetweenSpawnEnemy -= Time.deltaTime;
-       // }
-  //  }
+   // private void EnemySpawn()
+    //{
+    //    if (_enemySpanwner.TimeBetweenSpawnEnemy <= 0)
+    //    {
+     //       _enemySpanwner.Spawn(EnemyPath);
+     //      _enemySpanwner.TimeBetweenSpawnEnemy = _timeBetweenSpawnEnemy;
+    //    }
+     //   else
+     //   {
+     //       _enemySpanwner.TimeBetweenSpawnEnemy -= Time.deltaTime;
+     //   }
+    //}
 
     private void WearponSwitch()
     {
@@ -83,14 +88,6 @@ public class GameplayEntryPoint : ITickable, IStartable
         else
         {
             _timeBetweenWeaponChanges -= Time.deltaTime;
-        }
-    }
-
-    private void RotateGun()
-    {
-        if (_attackHandler.Wearpon.GetType() == typeof(Gun))
-        {
-            _gunRotater.Rotate();
         }
     }
 

@@ -10,7 +10,6 @@ public class Gun : IWearpon
     private Transform _container;
     private DataGun _dataGun;
 
-
     public float StartTimeBtwShots { get; set; }
 
     public Gun(IBulletFactory bulletFactory, GunView gunView, Transform container, DataGun config)

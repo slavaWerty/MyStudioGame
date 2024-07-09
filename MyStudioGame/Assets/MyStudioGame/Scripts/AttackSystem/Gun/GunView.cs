@@ -18,6 +18,19 @@ public class GunView : MonoBehaviour
         Vector2 direction = mousePosition - position;
         float angle = Vector2.SignedAngle(Vector2.right, direction);
         transform.eulerAngles = new Vector3(0, 0, angle);
+
+        Vector3 localScale = Vector3.one;
+
+        if (angle > 90 || angle < -90)
+        {
+            localScale.y = -1f;
+        }
+        else
+        {
+            localScale.y = +1f;
+        }
+
+        transform.localScale = localScale;
     }
 }
 
