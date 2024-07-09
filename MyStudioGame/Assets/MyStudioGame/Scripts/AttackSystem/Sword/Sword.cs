@@ -25,9 +25,9 @@ public class Sword : IWearpon
 
         foreach (Collider2D item in colliders)
         {
-            if (item.GetComponent<Enemy>() != null)
+            if (item.GetComponent<FarEnemy>() != null)
             {
-                enemies.Add(item.GetComponent<Enemy>());
+                enemies.Add(item.GetComponent<FarEnemy>());
             }
         }
 

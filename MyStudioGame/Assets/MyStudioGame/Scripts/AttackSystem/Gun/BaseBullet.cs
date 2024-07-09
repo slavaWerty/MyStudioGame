@@ -34,7 +34,7 @@ public class BaseBullet : MonoBehaviour, IBullet
     {
         if(collision != null)
         {
-            if(collision.TryGetComponent(out Enemy enemy))
+            if(collision.TryGetComponent(out FarEnemy enemy))
             {
                 enemy.TakeDamage(Damage);
             }
