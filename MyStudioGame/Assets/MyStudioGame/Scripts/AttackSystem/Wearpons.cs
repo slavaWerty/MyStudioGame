@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using ScriptableObjects;
 using UnityEngine;
 
 public class Wearpons
 {
-    private List<IWearpon> _wearpons;
+   // private List<IItemLogic> _wearpons;
     private Transform _bulletContainer;
 
     public IBulletFactory _bulletFactory;
 
-    public List<IWearpon> Weapons => _wearpons;
+   // public List<IItemLogic> Weapons => _wearpons;
 
     public Wearpons(IBulletFactory bulletFactory, GunView gunView, 
         Transform bulletContainer, SwordView swordView, GunConfig gunConfig, SwordConfig swordConfig)
@@ -16,10 +16,10 @@ public class Wearpons
         _bulletFactory = bulletFactory;
         _bulletContainer = bulletContainer;
 
-        _wearpons = new List<IWearpon>
-        {
-            new Gun(_bulletFactory, gunView, _bulletContainer, gunConfig.DataGun),
-            new Sword(swordView, swordConfig.DataSword)
-        };
+      //  _wearpons = new List<IItemLogic>
+       /// {
+       ////     new Gun(_bulletFactory, gunView, _bulletContainer, gunConfig.DataGun),
+       //     new Sword(swordView, swordConfig.DataSword)
+       // };
     }
 }

@@ -6,6 +6,7 @@ public class DekstopInput : IInput
     public event Action SwitchWearpon;
     public event Action Move;
     public event Action Jump;
+    public event Action OpenCloseInfentary;
 
     public void OnAttack()
     {
@@ -20,6 +21,11 @@ public class DekstopInput : IInput
     public void OnMove()
     {
         Move?.Invoke();
+    }
+
+    public void OnOpenCloseInfentary()
+    {
+        OpenCloseInfentary?.Invoke();
     }
 
     public void OnSwitchWearpon()

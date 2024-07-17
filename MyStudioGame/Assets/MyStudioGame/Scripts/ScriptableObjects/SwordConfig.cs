@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "SwordConfig", menuName = "Game/new SwordConfig")]
-public class SwordConfig : ScriptableObject
+namespace ScriptableObjects
 {
-    [SerializeField] private DataSword _dataSword;
+    [CreateAssetMenu(fileName = "SwordConfig", menuName = "Game/new SwordConfig")]
+    public class SwordConfig : ScriptableObject
+    {
+        [SerializeField] private DataSword _data;
 
-    public DataSword DataSword => _dataSword;
+        public DataSword DataSword => _data;
+    }
 }
-

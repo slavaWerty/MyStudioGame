@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Gun : IWearpon
+public class Gun
 {
     private const string Name = "DataGun";
     private const string GunInitKey = "GunInitKey";
@@ -43,6 +43,12 @@ public class Gun : IWearpon
     {
         _bulletFactory.CreateBullet(_view.Direction,
             _view.transform.position, _dataGun.Duration, _container, _dataGun.BulletSpeed, _dataGun.BulletDamage);
+    }
+
+    public void UsingLogic()
+    {
+        Attack();
+        Debug.Log("Using");
     }
 }
 

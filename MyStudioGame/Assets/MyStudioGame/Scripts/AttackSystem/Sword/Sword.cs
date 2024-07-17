@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Sword : IWearpon
+public class Sword 
 {
     private const string Name = "DataSword";
     private const string KeyInitSword = "KeyInitSword";
@@ -56,6 +56,11 @@ public class Sword : IWearpon
 
             _dataSword = saver.Load();
         }
+    }
+
+    public void UsingLogic()
+    {
+        Attack();
     }
 }
 

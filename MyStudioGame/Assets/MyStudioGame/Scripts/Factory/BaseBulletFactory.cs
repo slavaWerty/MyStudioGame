@@ -23,7 +23,7 @@ public class BaseBulletFactory : IBulletFactory
         var bullet = go.AddComponent<BaseBullet>();
         bullet.Initzialize(speed, damage, direction, duration);
 
-        _coroutines.StartCoroutine(_pool.PoolObjectWithTime(bullet.gameObject, duration));
+        _coroutines.StartCoroutine(_pool.PoolObjectWithTime(bullet.gameObject, duration, container));
         return bullet;
     }
 }

@@ -7,7 +7,7 @@ public class WearponFactory : IWeaponFactory
     {
         var go = CreateObject(path);
         var wearpon = go.AddComponent<GunView>();
-        wearpon.Initzialize(camera);
+        //wearpon.Initzialize(camera);
         return wearpon;
     }
 
@@ -15,7 +15,7 @@ public class WearponFactory : IWeaponFactory
     {
         var go = CreateObject(path);
         var wearpon = go.AddComponent<SwordView>();
-        wearpon.Initzialize();
+        //wearpon.Initzialize();
         return wearpon;
     }
     private GameObject CreateObject(string path)

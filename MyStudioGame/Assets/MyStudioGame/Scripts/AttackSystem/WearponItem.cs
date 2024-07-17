@@ -2,7 +2,7 @@
 
 public struct WearponItem
 {
-    public IWearpon Wearpon;
+   // public IItemLogic Wearpon;
     public GameObject WearponView;
 }
 
