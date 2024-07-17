@@ -2,13 +2,27 @@
 
 public class GunView : MonoBehaviour
 {
+    [SerializeField] private GunConfig _config;
+
     private Camera _mainCamera;
+    private Transform _container;
+    private Gun _gun;
 
     public Vector3 Direction => transform.right;
 
-    public void Initzialize(Camera camera)
+    private void Start()
     {
-        _mainCamera = camera;
+        _mainCamera = FindObjectOfType<Camera>();
+        var bulletFactory = new BaseBulletFactory(FindObjectOfType<Coroutines>());
+
+        if (bulletFactory == null)
+            Debug.Log("Bullet Null");
+
+        _container = new GameObject("[Gun Container]").transform;
+
+        _gun = new Gun(bulletFactory, this, FindObjectOfType<Camera>().transform, _config.DataGun);
+
+        _mainCamera = FindObjectOfType<Camera>();
     }
 
     private void Update()
@@ -31,6 +45,16 @@ public class GunView : MonoBehaviour
         }
 
         transform.localScale = localScale;
+
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            _gun.Attack();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(_container.gameObject);
     }
 }
 

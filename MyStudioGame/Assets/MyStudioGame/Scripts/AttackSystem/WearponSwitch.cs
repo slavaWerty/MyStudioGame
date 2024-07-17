@@ -5,14 +5,14 @@ using VContainer;
 
 public class WearponSwitch : IDisposable
 {
-    private IWearpon _currentWearpon;
+   // private IItemLogic _currentWearpon;
     private List<WearponItem> _wearpons;
     private IInput _input;
     private int _index = 0;
     private GameObject _currentView;
     private List<GameObject> _unselectedWeapons;
 
-    public IWearpon Wearpon => _currentWearpon;
+   // public IItemLogic Wearpon => _currentWearpon;
     public GameObject WearponView => _currentView;
     public IInput IInput => _input;
 
@@ -21,18 +21,18 @@ public class WearponSwitch : IDisposable
     {
         _unselectedWeapons = new List<GameObject>();
 
-        _wearpons = new List<WearponItem>{
-            new WearponItem
-            {
-                Wearpon = wearpons.Weapons[0],
-                WearponView = gunView.gameObject
-            },
-            new WearponItem
-            {
-                Wearpon = wearpons.Weapons[1],
-                WearponView = swordView.gameObject
-            }
-        };
+        //_wearpons = new List<WearponItem>{
+        //    new WearponItem
+        //    {
+        ///        Wearpon = wearpons.Weapons[0],
+        ///        WearponView = gunView.gameObject
+        //    },
+       ///     new WearponItem
+       ///     {
+       //         Wearpon = wearpons.Weapons[1],
+       //         WearponView = swordView.gameObject
+      //      }
+      //  };
 
         for (int i = 0; i < _wearpons.Count; i++)
         {
@@ -44,7 +44,7 @@ public class WearponSwitch : IDisposable
         _currentView.SetActive(true);
         _unselectedWeapons.Remove(_unselectedWeapons[0]);
 
-        _currentWearpon = _wearpons[0].Wearpon;
+     //   _currentWearpon = _wearpons[0].Wearpon;
 
         _input = input;
         _input.SwitchWearpon += NextWearpon;
@@ -59,22 +59,22 @@ public class WearponSwitch : IDisposable
     {
         for (int i = 0; i < _wearpons.Count; i++)
         {
-            if (_wearpons[i].Wearpon == _currentWearpon)
-            {
-                _index = i;
-                break;
-            }
+      //      if (_wearpons[i].Wearpon == _currentWearpon)
+      //      {
+       //         _index = i;
+       //         break;
+        //    }
         }
 
         if (_index == _wearpons.Count - 1)
         {
-            _currentWearpon = _wearpons[0].Wearpon;
+        //    _currentWearpon = _wearpons[0].Wearpon;
             _index = 0;
         }
         else
         {
             _index++;
-            _currentWearpon = _wearpons[_index].Wearpon;
+        //    _currentWearpon = _wearpons[_index].Wearpon;
         }
 
         ChangeView(_index);

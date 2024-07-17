@@ -13,17 +13,21 @@ public class Pool
         _gameObjects = new Queue<GameObject>();
     }
 
-    public IEnumerator PoolObjectWithTime(GameObject gameObject, float duration)
+    public IEnumerator PoolObjectWithTime(GameObject gameObject, float duration, Transform container)
     {
         WaitForSeconds wait = new WaitForSeconds(duration);
 
         yield return wait;
 
         _gameObjects.Enqueue(gameObject);
-        gameObject.gameObject.SetActive(false);
-        
-        if(gameObject.TryGetComponent(out BaseBullet bullet))
-            bullet.RestartDirection();
+
+        if (container != null)
+        {
+            gameObject.gameObject.SetActive(false);
+
+            if (gameObject.TryGetComponent(out BaseBullet bullet))
+                bullet.RestartDirection();
+        }
     }
 
     public GameObject GetObject(GameObject prefap)
