@@ -9,6 +9,7 @@ public class PlayerLifetimeScope : LifetimeScope
     [SerializeField] private MovementHandler _movementHandler;
     [SerializeField] private Movement _movement;
     [SerializeField] private Camera _camera;
+    
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -23,8 +24,6 @@ public class PlayerLifetimeScope : LifetimeScope
 
         builder.RegisterEntryPoint<PlayerEntryPoint>();
     }
-
-
 
     private static void RegisterInput(IContainerBuilder builder)
     {

@@ -26,13 +26,19 @@ namespace Infentory
         private readonly Dictionary<Vector2Int, InfentorySlot> _slotsMap = new();
         private readonly Dictionary<InfentorySlot, Vector2Int> _coordinateMaps = new();
         private readonly List<ItemConfig> _itemsConfig = new List<ItemConfig>();
+        private bool _isCrystalInfentory;
 
         public List<InfentorySlot> InfentoriesSlot { private set; get; }
 
-        public InfentoryGrid(InfentoryGridData data)
+        public string OwnerID => _data.OwnerID;
+
+        public bool IsCrystalInfentory => _isCrystalInfentory;
+
+        public InfentoryGrid(InfentoryGridData data, bool isCrystal)
         {
             _data = data;
             InfentoriesSlot = new List<InfentorySlot>();
+            _isCrystalInfentory = isCrystal;
 
             var size = data.Size;
 
@@ -86,7 +92,7 @@ namespace Infentory
 
             foreach (var slot in slots)
             {
-                if(slot.ItemID == itemID)
+                if (slot.ItemID == itemID)
                 {
                     amount += slot.Amount;
                 }
@@ -117,22 +123,42 @@ namespace Infentory
             return amountExist >= amount;
         }
 
-        public AddItemsToInfentoryResult AddItems(string itemID, Sprite sprite ,int amount = 1)
+        public AddItemsToInfentoryResult AddItems(string itemID, Sprite sprite, int amount = 1)
         {
+            PlayerBuffs buffs = new PlayerBuffs();
+
+            if (IsCrystalInfentory == false)
+                buffs = new PlayerBuffs(0, 0);
+            else
+                for (int i = 0; i < _itemsConfig.Count; i++)
+                    if (_itemsConfig[i].ItemID == itemID)
+                        buffs = new PlayerBuffs(_itemsConfig[i].DamageBuff, _itemsConfig[i].HealthBuff);
+
             var remainingAmount = amount;
             var itemsAddedToSlotWithSameItemsAmount = AddToSlotWithSameItems(itemID, remainingAmount, out remainingAmount);
 
             if (remainingAmount <= 0)
-                return new AddItemsToInfentoryResult(amount, itemsAddedToSlotWithSameItemsAmount);
+            {
+                return new AddItemsToInfentoryResult(amount, itemsAddedToSlotWithSameItemsAmount, buffs);
+            }
 
             var itemsAddedToAvaliableSlotsAmount = AddFirstAvaliableSlots(itemID, remainingAmount, out remainingAmount, sprite);
             var totalAddedItemsAmount = itemsAddedToAvaliableSlotsAmount + itemsAddedToSlotWithSameItemsAmount;
 
-            return new AddItemsToInfentoryResult(amount, totalAddedItemsAmount);
+            return new AddItemsToInfentoryResult(amount, totalAddedItemsAmount, buffs);
         }
 
         public AddItemsToInfentoryResult AddItems(Vector2Int slotCoordinate, string itemID, Sprite sprite, int amount = 1)
         {
+            PlayerBuffs buffs = new PlayerBuffs();
+
+            if (IsCrystalInfentory == false)
+                buffs = new PlayerBuffs(0, 0);
+            else
+                for (int i = 0; i < _itemsConfig.Count; i++)
+                    if (_itemsConfig[i].ItemID == itemID)
+                        buffs = new PlayerBuffs(_itemsConfig[i].DamageBuff, _itemsConfig[i].HealthBuff);
+
             var slot = _slotsMap[slotCoordinate];
             var newValue = slot.Amount + amount;
             var itemsAddedAmount = 0;
@@ -142,14 +168,14 @@ namespace Infentory
 
             var itemSlotCapacity = GetItemSlotCapacity(itemID);
 
-            if(newValue > itemSlotCapacity)
+            if (newValue > itemSlotCapacity)
             {
                 var remainingItems = newValue - itemSlotCapacity;
                 var itemToAddAmount = itemSlotCapacity - slot.Amount;
                 itemsAddedAmount += itemToAddAmount;
                 slot.Amount = itemSlotCapacity;
 
-                var result = AddItems(itemID, sprite ,remainingItems);
+                var result = AddItems(itemID, sprite, remainingItems);
                 itemsAddedAmount += result.ItemsAddedAmount;
             }
             else
@@ -158,14 +184,23 @@ namespace Infentory
                 slot.Amount = newValue;
             }
 
-            return new AddItemsToInfentoryResult(amount, itemsAddedAmount);
+            return new AddItemsToInfentoryResult(amount, itemsAddedAmount, buffs);
         }
 
         public RemoveToInfentoryResult RemoveItems(string itemID, int amount = 1)
         {
-            if(!Has(itemID, amount))
+            PlayerBuffs buffs = new PlayerBuffs();
+
+            if (IsCrystalInfentory == false)
+                buffs = new PlayerBuffs(0, 0);
+            else
+                for (int i = 0; i < _itemsConfig.Count; i++)
+                    if (_itemsConfig[i].ItemID == itemID)
+                        buffs = new PlayerBuffs(_itemsConfig[i].DamageBuff, _itemsConfig[i].HealthBuff);
+
+            if (!Has(itemID, amount))
             {
-                return new RemoveToInfentoryResult(amount, false);
+                return new RemoveToInfentoryResult(amount, false, buffs);
             }
 
             var amountToRemove = amount;
@@ -180,7 +215,7 @@ namespace Infentory
                     if (slot.ItemID != itemID)
                         continue;
 
-                    if(amountToRemove > slot.Amount)
+                    if (amountToRemove > slot.Amount)
                     {
                         amountToRemove -= slot.Amount;
 
@@ -190,7 +225,7 @@ namespace Infentory
                     {
                         RemoveItems(slotCoordinate, itemID, amountToRemove);
 
-                        return new RemoveToInfentoryResult(amount, true);
+                        return new RemoveToInfentoryResult(amount, true, buffs);
                     }
 
 
@@ -202,20 +237,29 @@ namespace Infentory
 
         public RemoveToInfentoryResult RemoveItems(Vector2Int slotCoordinate, string itemID, int amount = 1)
         {
+            PlayerBuffs buffs = new PlayerBuffs();
+
+            if (IsCrystalInfentory == false)
+                buffs = new PlayerBuffs(0, 0);
+            else
+                for (int i = 0; i < _itemsConfig.Count; i++)
+                    if (_itemsConfig[i].ItemID == itemID)
+                        buffs = new PlayerBuffs(_itemsConfig[i].DamageBuff, _itemsConfig[i].HealthBuff);
+
             var slot = _slotsMap[slotCoordinate];
 
-            if(slot.isEmpty || slot.ItemID != itemID || slot.Amount < amount)
-                return new RemoveToInfentoryResult(amount, false);
+            if (slot.isEmpty || slot.ItemID != itemID || slot.Amount < amount)
+                return new RemoveToInfentoryResult(amount, false, buffs);
 
             slot.Amount -= amount;
 
-            if(slot.Amount == 0)
+            if (slot.Amount == 0)
             {
                 slot.ItemID = null;
                 slot.Sprite = null;
             }
 
-            return new RemoveToInfentoryResult(amount, true);
+            return new RemoveToInfentoryResult(amount, true, buffs);
         }
 
         private int GetItemSlotCapacity(string itemId)
@@ -268,7 +312,7 @@ namespace Infentory
             return itemsAddedAmount;
         }
 
-        private int AddToSlotWithSameItems(string itemID, int amount, out int remainingAmount) 
+        private int AddToSlotWithSameItems(string itemID, int amount, out int remainingAmount)
         {
             var itemsAddedAmount = 0;
             remainingAmount = amount;
@@ -293,7 +337,7 @@ namespace Infentory
 
                     var newValue = slot.Amount + remainingAmount;
 
-                    if(newValue > slotItemCapacity)
+                    if (newValue > slotItemCapacity)
                     {
                         remainingAmount = newValue - slotItemCapacity;
                         var itemsToAddAmount = slotItemCapacity - slot.Amount;
@@ -330,7 +374,7 @@ namespace Infentory
         }
 
 
-    
+
         public Vector2Int GetCoordinate(InfentorySlot slot)
         {
             return _coordinateMaps[slot];

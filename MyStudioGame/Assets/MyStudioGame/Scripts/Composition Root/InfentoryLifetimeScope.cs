@@ -8,35 +8,57 @@ using VContainer.Unity;
 
 public class InfentoryLifetimeScope : LifetimeScope
 {
+    private string GameStateDataName => $"{_ownerId}GameStateDataName";
+    private string GameStateDataInitKey => $"{_ownerId}GameStateDataInitKey";
+
     [SerializeField] private ScreenView _sreenView;
     [SerializeField] private Vector2Int _size;
     [SerializeField] private ItemDetection _detection;
+    [SerializeField] private InfentoryService _infentoryService;
+    [Space(20)]
+    [SerializeField] private string _ownerId;
+    [SerializeField] private bool _isCrystalInfentory;
+
+    [field: SerializeField] private List<SelectButton> _selectButtons = new();
+
+    private GameStateData _gameStateData;
+    private JsonSaver<GameStateData> _jsonSaver;
 
     protected override void Configure(IContainerBuilder builder)
     {
         builder.RegisterInstance(_size);
-        builder.RegisterComponent(_detection);
         builder.RegisterComponent(_sreenView);
 
-        var infentoryData = CreateData(_size);
-        var infentory = new InfentoryGrid(infentoryData);
+        _infentoryService.RegisterInfentory(InitzializeData(_size), _isCrystalInfentory);
+
+        var infentory = _infentoryService.GetInventory(_ownerId);
+
+        Debug.Log(_ownerId);
 
         builder.RegisterInstance(infentory);
+        builder.RegisterComponent(_selectButtons);
 
         builder.Register<SelectedItem>(Lifetime.Singleton).WithParameter(infentory.InfentoriesSlot);
-        builder.Register<UsingItem>(Lifetime.Singleton);
+
+        builder.Register<UsingItem>(Lifetime.Singleton).WithParameter(_isCrystalInfentory);
 
         builder.Register<ThrowItem>(Lifetime.Singleton);
-        builder.Register<InfentoryController>(Lifetime.Singleton);
+
+        builder.RegisterComponent(_infentoryService);
+        builder.RegisterComponent(_detection);
+        builder.Register<InfentoryController>(Lifetime.Singleton).WithParameter(_infentoryService);
 
         builder.RegisterComponent(_detection.transform.GetChild(0));
 
         builder.Register<UsingItem>(Lifetime.Singleton).AsImplementedInterfaces();
 
-        builder.RegisterEntryPoint<InfentoryEntryPoint>();
+        builder.RegisterInstance(_jsonSaver);
+        builder.RegisterInstance(_gameStateData);
+
+        builder.RegisterEntryPoint<InfentoryEntryPoint>().WithParameter(_ownerId);
     }
 
-    private InfentoryGridData CreateData(Vector2Int size)
+    private InfentoryGridData InitzializeData(Vector2Int size)
     {
         var ceratedInfentorySlots = new List<InfentorySlotData>();
         var lenght = size.x * size.y;
@@ -47,9 +69,32 @@ public class InfentoryLifetimeScope : LifetimeScope
         var createdInfentoryData = new InfentoryGridData
         {
             Size = size,
-            Slots = ceratedInfentorySlots
+            Slots = ceratedInfentorySlots,
+            OwnerID = _ownerId
         };
 
+        LoadData(new GameStateData
+        {
+            InfentoryData = createdInfentoryData
+        });
+
         return createdInfentoryData;
+    }
+
+    private void LoadData(GameStateData startData)
+    {
+        _jsonSaver = new JsonSaver<GameStateData>(GameStateDataName);
+
+        if (PlayerPrefs.GetInt(GameStateDataInitKey) == 0)
+        {
+            _gameStateData = startData;
+            _jsonSaver.Save(_gameStateData);
+
+            PlayerPrefs.SetInt(GameStateDataInitKey, 1);
+        }
+        else
+        {
+            _gameStateData = _jsonSaver.Load();
+        }
     }
 }

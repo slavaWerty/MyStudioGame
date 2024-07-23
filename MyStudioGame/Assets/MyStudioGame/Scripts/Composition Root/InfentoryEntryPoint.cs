@@ -2,61 +2,45 @@
 using VContainer.Unity;
 using VContainer;
 using Infentory.Contraller;
-using Infentory;
-using Infentory.View;
 
 public class InfentoryEntryPoint : ITickable, IStartable
 {
-    private const float TimeBetweenThrowItem = 0.1f;
-
     [Inject] private ItemDetection _detection;
-    [Inject] private Vector2Int _size;
-    [Inject] private ScreenView _view;
     [Inject] private SelectedItem _selectedItem;
     [Inject] private ThrowItem _throwItem;
-    [Inject] private InfentoryGrid _infentory;
     [Inject] private InfentoryController _infentoryController;
+    [Inject] private JsonSaver<GameStateData> _jsonSaver;
+    [Inject] private GameStateData _gameStateData;
     [Inject] private UsingItem _usingItem;
 
+    private string _ownerId;
 
-    private float _timeBetweenThrowItem;
+    public InfentoryEntryPoint(string ownerId)
+    {
+        _ownerId = ownerId;
+    }
 
     public void Start()
     {
-        _infentoryController.OpenInventory();
-        _timeBetweenThrowItem = TimeBetweenThrowItem;
+        _infentoryController.OpenInventory(_ownerId);
+        _selectedItem.OnSelectedItemChanged();
     }
 
     public void Tick()
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            var item = _detection.SearchItem();
+            if (_detection.CrystalInfentoryOwnerId == _ownerId)
+                _detection.SearchItem();
 
-            if (item == null)
-                return;
-
-            _infentory.AddItemConfig(item.ItemData);
-            _infentory.AddItems(item.ItemData.ItemID, item.ItemData.Sprite, item.Amount);
             _selectedItem.OnSelectedItemChanged();
+            _jsonSaver.Save(_gameStateData);
         }
 
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.V))
         {
-            _selectedItem.NextSelected();
-        }
-
-        if (_timeBetweenThrowItem <= 0)
-        {
-            if (Input.GetKeyDown(KeyCode.V))
-            {
-                _throwItem.Throw();
-                _timeBetweenThrowItem = TimeBetweenThrowItem;
-            }
-        }
-        else
-        {
-            _timeBetweenThrowItem -= Time.deltaTime;
+            _throwItem.Throw();
+            _jsonSaver.Save(_gameStateData);
         }
     }
 }

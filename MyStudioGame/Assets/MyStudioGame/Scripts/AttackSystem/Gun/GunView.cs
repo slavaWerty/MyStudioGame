@@ -3,24 +3,23 @@
 public class GunView : MonoBehaviour
 {
     [SerializeField] private GunConfig _config;
+    [SerializeField] private float _timeBetweenAttack;
 
+    private float _tempTimeBetweenAttack;
     private Camera _mainCamera;
-    private Transform _container;
     private Gun _gun;
 
     public Vector3 Direction => transform.right;
 
     private void Start()
     {
+        _tempTimeBetweenAttack = _timeBetweenAttack;
+
         _mainCamera = FindObjectOfType<Camera>();
+
         var bulletFactory = new BaseBulletFactory(FindObjectOfType<Coroutines>());
 
-        if (bulletFactory == null)
-            Debug.Log("Bullet Null");
-
-        _container = new GameObject("[Gun Container]").transform;
-
-        _gun = new Gun(bulletFactory, this, FindObjectOfType<Camera>().transform, _config.DataGun);
+        _gun = new Gun(bulletFactory, this, FindObjectOfType<Camera>().transform.GetChild(0), _config.DataGun);
 
         _mainCamera = FindObjectOfType<Camera>();
     }
@@ -46,15 +45,18 @@ public class GunView : MonoBehaviour
 
         transform.localScale = localScale;
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (_timeBetweenAttack <= 0)
         {
-            _gun.Attack();
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                _gun.Attack();
+                _timeBetweenAttack = _tempTimeBetweenAttack;
+            }
         }
-    }
-
-    private void OnDestroy()
-    {
-        Destroy(_container.gameObject);
+        else
+        {
+            _timeBetweenAttack -= Time.deltaTime;
+        }
     }
 }
 
