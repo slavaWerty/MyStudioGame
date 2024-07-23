@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 6922390759221495253}
   - component: {fileID: 8568417738490332981}
   - component: {fileID: 7422773222397485337}
+  - component: {fileID: 7443176190369737159}
   m_Layer: 0
   m_Name: BasePlayer
   m_TagString: Untagged
@@ -109,7 +110,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 10
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -242,7 +243,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c4e635048fd0e34ebe1ab8eae56ed21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BaseInfentoryOwnerID: Base
+  CrystalInfentoryOwnerID: Upgrade
   _lenght: 3
   _layerMask:
     serializedVersion: 2
     m_Bits: 128
+--- !u!114 &7443176190369737159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8633890489169184153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 772ef0a805ecd2f4886b869c76a09c84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerTransform: {fileID: 0}
+  _speed: 1.5
