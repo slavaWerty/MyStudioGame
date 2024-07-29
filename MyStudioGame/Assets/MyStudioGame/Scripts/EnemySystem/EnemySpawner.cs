@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemySpawner : IDisposable
+public class EnemySpawner
 {
     private DataEnemy _dataEnemy;
     private IEnemyFactory _factory;
@@ -27,14 +27,6 @@ public class EnemySpawner : IDisposable
     public void Spawn(string path)
     {
         _pool.GetEnemy(path, _dataEnemy, _factory, _container);
-    }
-
-    public void Dispose()
-    {
-        foreach (FarEnemy enemy in _enemies)
-        {
-            enemy.Dead -= _pool.PoolObject;
-        }
     }
 }
 

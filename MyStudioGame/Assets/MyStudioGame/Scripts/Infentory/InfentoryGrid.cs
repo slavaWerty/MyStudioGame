@@ -125,40 +125,22 @@ namespace Infentory
 
         public AddItemsToInfentoryResult AddItems(string itemID, Sprite sprite, int amount = 1)
         {
-            PlayerBuffs buffs = new PlayerBuffs();
-
-            if (IsCrystalInfentory == false)
-                buffs = new PlayerBuffs(0, 0);
-            else
-                for (int i = 0; i < _itemsConfig.Count; i++)
-                    if (_itemsConfig[i].ItemID == itemID)
-                        buffs = new PlayerBuffs(_itemsConfig[i].DamageBuff, _itemsConfig[i].HealthBuff);
-
             var remainingAmount = amount;
             var itemsAddedToSlotWithSameItemsAmount = AddToSlotWithSameItems(itemID, remainingAmount, out remainingAmount);
 
             if (remainingAmount <= 0)
             {
-                return new AddItemsToInfentoryResult(amount, itemsAddedToSlotWithSameItemsAmount, buffs);
+                return new AddItemsToInfentoryResult(amount, itemsAddedToSlotWithSameItemsAmount);
             }
 
             var itemsAddedToAvaliableSlotsAmount = AddFirstAvaliableSlots(itemID, remainingAmount, out remainingAmount, sprite);
             var totalAddedItemsAmount = itemsAddedToAvaliableSlotsAmount + itemsAddedToSlotWithSameItemsAmount;
 
-            return new AddItemsToInfentoryResult(amount, totalAddedItemsAmount, buffs);
+            return new AddItemsToInfentoryResult(amount, totalAddedItemsAmount);
         }
 
         public AddItemsToInfentoryResult AddItems(Vector2Int slotCoordinate, string itemID, Sprite sprite, int amount = 1)
         {
-            PlayerBuffs buffs = new PlayerBuffs();
-
-            if (IsCrystalInfentory == false)
-                buffs = new PlayerBuffs(0, 0);
-            else
-                for (int i = 0; i < _itemsConfig.Count; i++)
-                    if (_itemsConfig[i].ItemID == itemID)
-                        buffs = new PlayerBuffs(_itemsConfig[i].DamageBuff, _itemsConfig[i].HealthBuff);
-
             var slot = _slotsMap[slotCoordinate];
             var newValue = slot.Amount + amount;
             var itemsAddedAmount = 0;
@@ -184,23 +166,14 @@ namespace Infentory
                 slot.Amount = newValue;
             }
 
-            return new AddItemsToInfentoryResult(amount, itemsAddedAmount, buffs);
+            return new AddItemsToInfentoryResult(amount, itemsAddedAmount);
         }
 
         public RemoveToInfentoryResult RemoveItems(string itemID, int amount = 1)
         {
-            PlayerBuffs buffs = new PlayerBuffs();
-
-            if (IsCrystalInfentory == false)
-                buffs = new PlayerBuffs(0, 0);
-            else
-                for (int i = 0; i < _itemsConfig.Count; i++)
-                    if (_itemsConfig[i].ItemID == itemID)
-                        buffs = new PlayerBuffs(_itemsConfig[i].DamageBuff, _itemsConfig[i].HealthBuff);
-
             if (!Has(itemID, amount))
             {
-                return new RemoveToInfentoryResult(amount, false, buffs);
+                return new RemoveToInfentoryResult(amount, false);
             }
 
             var amountToRemove = amount;
@@ -225,7 +198,7 @@ namespace Infentory
                     {
                         RemoveItems(slotCoordinate, itemID, amountToRemove);
 
-                        return new RemoveToInfentoryResult(amount, true, buffs);
+                        return new RemoveToInfentoryResult(amount, true);
                     }
 
 
@@ -237,19 +210,10 @@ namespace Infentory
 
         public RemoveToInfentoryResult RemoveItems(Vector2Int slotCoordinate, string itemID, int amount = 1)
         {
-            PlayerBuffs buffs = new PlayerBuffs();
-
-            if (IsCrystalInfentory == false)
-                buffs = new PlayerBuffs(0, 0);
-            else
-                for (int i = 0; i < _itemsConfig.Count; i++)
-                    if (_itemsConfig[i].ItemID == itemID)
-                        buffs = new PlayerBuffs(_itemsConfig[i].DamageBuff, _itemsConfig[i].HealthBuff);
-
             var slot = _slotsMap[slotCoordinate];
 
             if (slot.isEmpty || slot.ItemID != itemID || slot.Amount < amount)
-                return new RemoveToInfentoryResult(amount, false, buffs);
+                return new RemoveToInfentoryResult(amount, false);
 
             slot.Amount -= amount;
 
@@ -259,7 +223,7 @@ namespace Infentory
                 slot.Sprite = null;
             }
 
-            return new RemoveToInfentoryResult(amount, true, buffs);
+            return new RemoveToInfentoryResult(amount, true);
         }
 
         private int GetItemSlotCapacity(string itemId)

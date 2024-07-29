@@ -9,6 +9,7 @@ public class SelectedItem : IDisposable
     private InfentorySlot _currentSelectedSlot;
 
     public InfentorySlot CurrentSelectedSlot => _currentSelectedSlot;
+    public List<InfentorySlot> InfentoriesSlots => _infentoriesSlots;
 
     public event Action SelectedObjectChanged;
 

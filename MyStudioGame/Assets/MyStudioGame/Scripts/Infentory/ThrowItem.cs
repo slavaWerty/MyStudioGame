@@ -5,13 +5,17 @@ public class ThrowItem
 {
     private SelectedItem _selectedItem;
     private InfentoryGrid _infentory;
+    private Transform _spawnPosition;
+    private UsingItem _usingItem;
 
     private InfentorySlot Slot => _selectedItem.CurrentSelectedSlot;
 
-    public ThrowItem(SelectedItem selectedItem, InfentoryGrid infentory)
+    public ThrowItem(SelectedItem selectedItem, InfentoryGrid infentory, Transform spawnPosition, UsingItem usingItem)
     {
         _selectedItem = selectedItem;
         _infentory = infentory;
+        _spawnPosition = spawnPosition;
+        _usingItem = usingItem;
     }
 
     public void Throw()
@@ -22,25 +26,32 @@ public class ThrowItem
             return;
         }
 
-        CreateItem();
+        if (CreateItem() == null)
+            return;
 
         _infentory.RemoveItems(_infentory.GetCoordinate(Slot), Slot.ItemID, Slot.Amount);
+        GameObject.Destroy(_usingItem.CurrentObject);
     }
 
-    private void CreateItem()
+    private GameObject CreateItem()
     {
-        var prefap = Resources.Load<GameObject>("Prefaps/Square");
-        var go = GameObject.Instantiate(prefap) as GameObject;
-        go.name = Slot.ItemID;
+        GameObject go;
 
-        go.AddComponent<BoxCollider2D>();
-        go.AddComponent<Rigidbody2D>();
-        var spriteRenderer = go.GetComponent<SpriteRenderer>();
-        spriteRenderer.sprite = Slot.Sprite;
-        var item = go.AddComponent<Item>();
-        var config = _infentory.GetItemConfig(Slot.ItemID);
-        item.Initzialize(Slot.Amount, config);
-        Debug.Log("ThrowItem");
+        var prefap = Resources.Load<GameObject>($"Prefaps/Throw{Slot.ItemID}");
+
+        if (prefap != null)
+            go = GameObject.Instantiate(prefap);
+        else
+        {
+            Debug.Log("Item not Prefap Object");
+            return null;
+        }
+
+        go.transform.position = _spawnPosition.position;
+
+        _selectedItem.OnSelectedItemChanged();
+
+        return go;
     }
 }
 

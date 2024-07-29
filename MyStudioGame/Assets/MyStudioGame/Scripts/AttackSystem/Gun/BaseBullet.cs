@@ -30,15 +30,14 @@ public class BaseBullet : MonoBehaviour, IBullet
         transform.eulerAngles = new Vector3(0, 0, angle);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision != null)
-        {
-            if(collision.TryGetComponent(out FarEnemy enemy))
+        if (collision != null)
+            if (collision.gameObject.TryGetComponent(out Enemy enemy))
             {
                 enemy.TakeDamage(Damage);
+                Destroy(gameObject);
             }
-        }
     }
 }
 

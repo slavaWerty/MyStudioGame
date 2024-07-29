@@ -21,19 +21,20 @@ public class Sword
     public void Attack()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(_swordView.AttackPoint.position, _dataSword.Radius);
-        List<IDamagable> enemies = new List<IDamagable>();
+        List<Enemy> enemies = new List<Enemy>();
 
         foreach (Collider2D item in colliders)
         {
-            if (item.GetComponent<FarEnemy>() != null)
+            if (item.GetComponent<Enemy>() != null)
             {
-                enemies.Add(item.GetComponent<FarEnemy>());
+                enemies.Add(item.GetComponent<Enemy>());
             }
         }
 
-        foreach (IDamagable enemy in enemies)
+        foreach (Enemy enemy in enemies)
         {
             enemy.TakeDamage(_dataSword.Damage);
+           
         }
     }
 
@@ -46,21 +47,12 @@ public class Sword
             _dataSword = dataSword;
             saver.Save(_dataSword);
 
-            Debug.Log("Save");
-
             PlayerPrefs.SetInt(KeyInitSword, 1);
         }
         else
         {
-            Debug.Log("Load");
-
             _dataSword = saver.Load();
         }
-    }
-
-    public void UsingLogic()
-    {
-        Attack();
     }
 }
 
