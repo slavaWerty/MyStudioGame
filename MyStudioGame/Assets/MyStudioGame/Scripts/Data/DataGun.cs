@@ -7,5 +7,8 @@ public struct DataGun
     public float StartTimeBtwShots;
     public int BulletDamage;
     public float BulletSpeed;
+    public int Ammo;
+    public float TimeBetweenReload;
+    public int AllAmmo;
 }
 

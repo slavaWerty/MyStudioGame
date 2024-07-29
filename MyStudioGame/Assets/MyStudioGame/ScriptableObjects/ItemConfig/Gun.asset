@@ -13,5 +13,8 @@ MonoBehaviour:
   m_Name: Gun
   m_EditorClassIdentifier: 
   _amountCapacity: 1
-  _itemID: Gun
-  _sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  _itemID: Automaton
+  _sprite: {fileID: -36752712, guid: 78568491ea03cf049ba579244e698e39, type: 3}
+  _isCrystal: 0
+  _damageBuff: 0
+  _healthBuff: 0

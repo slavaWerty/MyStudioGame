@@ -48,15 +48,23 @@ public class Pool
         {
             var enemy = factory.CreateEnemy(path, data);
 
-            if (enemy.TryGetComponent(out IDamagable damagble))
-                damagble.Dead += PoolObject;
-
             enemy.transform.parent = container;
             return enemy;
         }
 
         _gameObjects.Peek().gameObject.SetActive(true);
-        return _gameObjects.Dequeue().GetComponent<FarEnemy>();
+        return _gameObjects.Dequeue().GetComponent<Enemy>();
+    }
+
+    public Enemy GetEnemy(GameObject enemy)
+    {
+        if(_gameObjects.Count == 0)
+        {
+            return enemy.GetComponent<Enemy>();
+        }
+
+        _gameObjects.Peek().gameObject.SetActive(true);
+        return _gameObjects.Dequeue().GetComponent<Enemy>();
     }
 
     public void PoolObject(GameObject enemy)

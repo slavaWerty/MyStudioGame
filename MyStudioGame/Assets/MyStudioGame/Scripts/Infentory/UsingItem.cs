@@ -1,19 +1,31 @@
-﻿using System;
+﻿using Infentory;
+using System;
 using UnityEngine;
 
 public class UsingItem : IDisposable
 {
     private SelectedItem _item;
+    private ThrowItem _throwItem;
     private Transform _parent;
     private bool _isCrystal;
 
-    public GameObject _currentObject;
+    private InfentoryService _service;
+    private Coroutines _coroutines;
+    private Camera _camera;
 
-    public UsingItem(SelectedItem item, Transform parent, bool isCrystal)
+    private GameObject _currentObject;
+
+    public GameObject CurrentObject => _currentObject;
+
+    public UsingItem(SelectedItem item, Transform parent, bool isCrystal,
+        InfentoryService service, Coroutines coroutines, Camera camera)
     {
         _item = item;
         _parent = parent;
         _isCrystal = isCrystal;
+        _service = service;
+        _coroutines = coroutines;
+        _camera = camera;
 
         _item.SelectedObjectChanged += OnSelectedObjectChanged;
     }
@@ -41,12 +53,23 @@ public class UsingItem : IDisposable
     public GameObject CreateObject(Transform parent)
     {
         if (_item.CurrentSelectedSlot.isEmpty)
+            return null;
+
+        GameObject go;
+
+        var prefap = Resources.Load<GameObject>($"Prefaps/Using{_item.CurrentSelectedSlot.ItemID}");
+
+        if (prefap != null)
+            go = GameObject.Instantiate(prefap);
+        else
         {
+            Debug.Log("Item not Prefap Object");
             return null;
         }
 
-        var prefap = Resources.Load<GameObject>($"Prefaps/{_item.CurrentSelectedSlot.ItemID}");
-        var go = GameObject.Instantiate(prefap) as GameObject;
+        if(go.TryGetComponent(out IInitzializer initzializer))
+            initzializer.Initzialize(_service, _coroutines, _camera);
+
         go.transform.position = parent.position;
         go.transform.parent = parent;
         return go;

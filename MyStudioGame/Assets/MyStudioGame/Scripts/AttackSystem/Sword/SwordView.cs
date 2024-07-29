@@ -28,6 +28,7 @@ public class SwordView : MonoBehaviour
             {
                 _sword.Attack();
                 _timeBetweenAttack = _tempTimeBetweenAttack;
+                Debug.Log("Sword Attacked");
             }
         }
         else

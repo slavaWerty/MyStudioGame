@@ -4,13 +4,11 @@
     {
         public readonly int ItemsToRemoveAmount;
         public readonly bool Success;
-        public readonly PlayerBuffs PlayerBuffs;
 
-        public RemoveToInfentoryResult(int itemsToRemoveAmount, bool success, PlayerBuffs playerBuffs)
+        public RemoveToInfentoryResult(int itemsToRemoveAmount, bool success)
         {
             ItemsToRemoveAmount = itemsToRemoveAmount;
             Success = success;
-            PlayerBuffs = playerBuffs;
         }
     }
 }

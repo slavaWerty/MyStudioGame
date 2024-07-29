@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dataEnemy:
     TimeBetweenSpawn: 2
+    TimeBetweenAttack: 2
     Speed: 5
     Health: 10
     XOffset: 3
     Time: 3
     distance: 3
+    Radius: 3
+    Damage: 10
+    Duration: 3

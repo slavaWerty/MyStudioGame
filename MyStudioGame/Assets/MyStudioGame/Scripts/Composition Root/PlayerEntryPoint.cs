@@ -8,9 +8,12 @@ public class PlayerEntryPoint : ITickable
 
     [Inject] public MovementHandler _movementHandler;
     [Inject] public RotatePlayer _playerRotater;
+    [Inject] public Movement _movement;
 
     public void Tick()
     {
+        _movement.Idle(_movementHandler.layerMask);
+
         PlayerMove();
 
         PlayerJump();

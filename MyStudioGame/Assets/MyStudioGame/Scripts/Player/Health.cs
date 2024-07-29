@@ -1,42 +1,34 @@
 ﻿using System;
+using UnityEngine;
 
-public class Health : IDisposable
+public class Health : MonoBehaviour
 {
-    private int _health;
-    private Buffs _buffs;
-    private int _startHealth;
+    [SerializeField] private int _health;
+    private int _currentHealth;
 
     public int HealthValue => _health;
 
-    public event Action Died;
+    public event Action<float> TakeDamaged;
 
-    public Health(Buffs buffs, int health)
+    private void Start()
     {
-        _health = health;
-        _buffs = buffs;
-        _startHealth = health;
-
-        _buffs.PlayerBuffsChanged += OnPlayerBuffsChanged;
-    }
-
-    private void OnPlayerBuffsChanged()
-    {
-        _health += _startHealth + _buffs.PlayerBuffs.HealthBuff;
+        _currentHealth = _health;
     }
 
     public void TakeDamage(int damage)
     {
-        _health -= damage;
+        _currentHealth -= damage;
 
-        if(_health <= 0)
+        if (_currentHealth <= 0)
         {
-            Died?.Invoke();
+            TakeDamaged?.Invoke(0);
+            Debug.Log("Died");
         }
-    }
-
-    public void Dispose()
-    {
-        _buffs.PlayerBuffsChanged -= OnPlayerBuffsChanged;
+        else
+        {
+            float currentHealthAsPersatenge = (float)_currentHealth / _health;
+            TakeDamaged?.Invoke(currentHealthAsPersatenge);
+        }
     }
 }
 

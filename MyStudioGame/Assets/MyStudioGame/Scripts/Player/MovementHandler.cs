@@ -11,6 +11,7 @@ public class MovementHandler : IDisposable
     private MovementConfig _config;
 
     public IInput IInput => _input;
+    public LayerMask layerMask => _config.LayerMask;
 
     public MovementHandler(IInput input, Movement playerMovable, MovementConfig config)
     {
@@ -25,7 +26,7 @@ public class MovementHandler : IDisposable
 
     private void Move()
     {
-        _playerMovable.Move(new Vector2(Input.GetAxis(Horizontal), 0), _config.Speed);
+        _playerMovable.Move(new Vector2(Input.GetAxis(Horizontal), 0), _config.Speed, _config.LayerMask);
     }
 
     private void Jump()

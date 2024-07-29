@@ -15,6 +15,8 @@ public class InfentoryLifetimeScope : LifetimeScope
     [SerializeField] private Vector2Int _size;
     [SerializeField] private ItemDetection _detection;
     [SerializeField] private InfentoryService _infentoryService;
+    [SerializeField] private Coroutines _coroutines;
+    [SerializeField] private Camera _maincamera;
     [Space(20)]
     [SerializeField] private string _ownerId;
     [SerializeField] private bool _isCrystalInfentory;
@@ -28,6 +30,8 @@ public class InfentoryLifetimeScope : LifetimeScope
     {
         builder.RegisterInstance(_size);
         builder.RegisterComponent(_sreenView);
+        builder.RegisterComponent(_coroutines);
+        builder.RegisterComponent(_maincamera);
 
         _infentoryService.RegisterInfentory(InitzializeData(_size), _isCrystalInfentory);
 
@@ -42,7 +46,7 @@ public class InfentoryLifetimeScope : LifetimeScope
 
         builder.Register<UsingItem>(Lifetime.Singleton).WithParameter(_isCrystalInfentory);
 
-        builder.Register<ThrowItem>(Lifetime.Singleton);
+        builder.Register<ThrowItem>(Lifetime.Singleton).WithParameter(_detection.transform);
 
         builder.RegisterComponent(_infentoryService);
         builder.RegisterComponent(_detection);

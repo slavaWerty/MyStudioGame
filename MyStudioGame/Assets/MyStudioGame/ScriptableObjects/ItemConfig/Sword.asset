@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _amountCapacity: 1
   _itemID: Sword
-  _sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  _sprite: {fileID: -68929547, guid: f5349d53c01fd464e9453e93e9758391, type: 3}
+  _isCrystal: 0
+  _damageBuff: 0
+  _healthBuff: 0

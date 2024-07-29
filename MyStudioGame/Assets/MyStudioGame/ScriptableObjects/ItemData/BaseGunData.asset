@@ -17,3 +17,6 @@ MonoBehaviour:
     StartTimeBtwShots: 2
     BulletDamage: 10
     BulletSpeed: 30
+    Ammo: 15
+    TimeBetweenReload: 3
+    AllAmmo: 45

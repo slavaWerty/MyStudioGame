@@ -12,15 +12,15 @@ public class FarEnemy : Enemy, IDamagable
     public int Health { get; set; }
 
     public event Action TakeDamaged;
-    public event Action<GameObject> Dead;
 
     [Inject]
-    public override void Initzialize(EnemyConfig config, Movement playerTransform)
+    public override void Initzialize(EnemyConfig config, Transform playerTransform)
     {
         _speed = config.DataEnemy.Speed;
         Health = config.DataEnemy.Health;
 
-        _attackState = new FarAttackEnemyState(transform, playerTransform.transform, config.DataEnemy.distance, _speed);
+        _attackState = new FarAttackEnemyState(transform, playerTransform, config.DataEnemy.distance,
+            _speed, config.DataEnemy.Damage, config.DataEnemy.TimeBetweenAttack, config.DataEnemy.Duration, transform.GetChild(2));
         _idleState = new IdleEnemyState(transform, config.DataEnemy.Time);
 
         SetState(_idleState);
@@ -57,19 +57,21 @@ public class FarEnemy : Enemy, IDamagable
         SetState(_idleState);
     }
 
-    public void TakeDamage(int damage)
+    public override void TakeDamage(int damage)
     {
         if (damage <= 0)
             return;
 
-        TakeDamaged?.Invoke();
-
         Health -= damage;
+
+        TakeDamaged?.Invoke();
 
         if (Health < 0)
         {
             Health = 0;
-            Dead?.Invoke(gameObject);
+            Destroy(gameObject);
         }
+
+        Debug.Log("Aaaaa");
     }
 }

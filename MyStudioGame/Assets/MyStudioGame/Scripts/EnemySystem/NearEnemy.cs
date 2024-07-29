@@ -5,6 +5,8 @@ using VContainer;
 public class NearEnemy : Enemy, IDamagable
 {
     private float _speed;
+    private float _attackRadius;
+    private int _damage;
 
     private IEnemyState _attackState;
     private IEnemyState _idleState;
@@ -15,12 +17,15 @@ public class NearEnemy : Enemy, IDamagable
     public event Action<GameObject> Dead;
 
     [Inject]
-    public override void Initzialize(EnemyConfig config, Movement playerTransform)
+    public override void Initzialize(EnemyConfig config, Transform playerTransform)
     {
         _speed = config.DataEnemy.Speed;
+        _attackRadius = config.DataEnemy.Radius;
+        _damage = config.DataEnemy.Damage;
         Health = config.DataEnemy.Health;
 
-        _attackState = new NearAttackEnemyState(playerTransform.transform, transform, _speed);
+        _attackState = new NearAttackEnemyState(playerTransform.transform, transform,
+            _speed, _attackRadius, _damage, config.DataEnemy.TimeBetweenAttack);
         _idleState = new IdleEnemyState(transform, config.DataEnemy.Time);
 
         SetState(_idleState);
@@ -57,7 +62,7 @@ public class NearEnemy : Enemy, IDamagable
         SetState(_idleState);
     }
 
-    public void TakeDamage(int damage)
+    public override void TakeDamage(int damage)
     {
         if (damage <= 0)
             return;
